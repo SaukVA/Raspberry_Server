@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+
+  # Contenedor de Nginx que almacenara la pagina web
+  web:
+    image: nginx
+    container_name: servidor-web
+    volumes:
+      - ./pagina_web/:/usr/share/nginx/html:ro
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`saukva.duckdns.org`)"
