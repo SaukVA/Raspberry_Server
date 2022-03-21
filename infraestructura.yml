@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  duckdns:
+    image: linuxserver/duckdns
+    container_name: duckdns
+    environment:
+      - PUID=1000 #optional
+      - PGID=1000 #optional
+      - TZ=Europe/Madrid
+      - SUBDOMAINS=${SUBDOMAINS}
+      - TOKEN=${TOKEN}
+      - LOG_FILE=false #optional
+    volumes:
+      - /home/pi/raspberry_server/conf/duckdns:/config #optional
+    restart: unless-stopped
