@@ -1,11 +1,35 @@
 version: '3.7'
+
 services:
 
-  # Contenedor de Nginx que almacenara la pagina web
-  web:
-    image: nginx
-    container_name: servidor-web
+  duckdns:
+    image: linuxserver/duckdns
+    container_name: duckdns
+    environment:
+      - TZ=Europe/Madrid
+      - SUBDOMAINS=${SUBDOMAINS} # pagina_ejemplo
+      - TOKEN=${TOKEN}
     volumes:
-      - ./pagina_web/:/usr/share/nginx/html:ro
-    labels:
-      - "traefik.http.routers.whoami.rule=Host(`saukva.duckdns.org`)"
+      - ./conf/duckdns:/config
+    restart: unless-stopped
+
+  swag:
+    image: linuxserver/swag
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - URL=${DOMINIO}           #pagina_ejemplo.duckdns.org
+      - VALIDATION=duckdns
+      - DUCKDNSTOKEN=${TOKEN}
+      - SUBDOMAINS=www,
+      #- DNSPLUGIN=cloudflare
+    volumes:
+      - ./conf/swag:/config
+    ports:
+      - 443:443
+      - 80:80
+    restart: unless-stopped
